@@ -73,7 +73,7 @@ st.markdown("""
 
 
 # Importar módulos de páginas
-from paginas import dashboard, pacientes, prontuario, partos, internacoes, relatorios
+from paginas import dashboard, pacientes, prontuario, partos, internacoes, relatorios, medicos
 
 # ============================================================================
 # SIDEBAR - NAVEGAÇÃO
@@ -91,6 +91,7 @@ pagina = st.sidebar.radio(
         "📋 Prontuário",
         "👶 Partos",
         "🛏️ Internações",
+        "👨‍⚕️ Médicos",
         "📈 Relatórios"
     ],
     label_visibility="collapsed"
@@ -131,6 +132,9 @@ elif pagina == "👶 Partos":
 
 elif pagina == "🛏️ Internações":
     internacoes.render()
+
+elif pagina == "👨‍⚕️ Médicos":
+    medicos.render()
 
 elif pagina == "📈 Relatórios":
     relatorios.render()

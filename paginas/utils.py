@@ -11,6 +11,26 @@ if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
 # Agora importa os dados
-from dados import get_dados, atualizar_paciente, adicionar_evolucao
+from dados import (
+    get_dados,
+    atualizar_paciente,
+    adicionar_evolucao,
+    get_medicos,
+    adicionar_medico,
+    atualizar_medico,
+    remover_medico,
+    reativar_medico,
+    get_medico_por_id
+)
 
-__all__ = ['get_dados', 'atualizar_paciente', 'adicionar_evolucao']
+__all__ = [
+    'get_dados',
+    'atualizar_paciente',
+    'adicionar_evolucao',
+    'get_medicos',
+    'adicionar_medico',
+    'atualizar_medico',
+    'remover_medico',
+    'reativar_medico',
+    'get_medico_por_id'
+]

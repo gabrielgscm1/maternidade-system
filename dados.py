@@ -39,12 +39,14 @@ EXAMES = [
 ]
 
 MEDICOS = [
-    {'id': 1, 'nome': 'Dr. Carlos Alberto Silva', 'crm': '12345-SP', 'especialidade': 'Obstetrícia'},
-    {'id': 2, 'nome': 'Dra. Maria Fernanda Costa', 'crm': '23456-SP', 'especialidade': 'Obstetrícia'},
-    {'id': 3, 'nome': 'Dr. Roberto Santos', 'crm': '34567-SP', 'especialidade': 'Obstetrícia'},
-    {'id': 4, 'nome': 'Dra. Ana Paula Oliveira', 'crm': '45678-SP', 'especialidade': 'Neonatologia'},
-    {'id': 5, 'nome': 'Dr. Fernando Lima', 'crm': '56789-SP', 'especialidade': 'Anestesiologia'},
+    {'id': 1, 'nome': 'Dr. Carlos Alberto Silva', 'crm': '12345-SP', 'especialidade': 'Obstetrícia', 'telefone': '(11) 99999-0001', 'email': 'carlos.silva@maternidade.com', 'ativo': True},
+    {'id': 2, 'nome': 'Dra. Maria Fernanda Costa', 'crm': '23456-SP', 'especialidade': 'Obstetrícia', 'telefone': '(11) 99999-0002', 'email': 'maria.costa@maternidade.com', 'ativo': True},
+    {'id': 3, 'nome': 'Dr. Roberto Santos', 'crm': '34567-SP', 'especialidade': 'Obstetrícia', 'telefone': '(11) 99999-0003', 'email': 'roberto.santos@maternidade.com', 'ativo': True},
+    {'id': 4, 'nome': 'Dra. Ana Paula Oliveira', 'crm': '45678-SP', 'especialidade': 'Neonatologia', 'telefone': '(11) 99999-0004', 'email': 'ana.oliveira@maternidade.com', 'ativo': True},
+    {'id': 5, 'nome': 'Dr. Fernando Lima', 'crm': '56789-SP', 'especialidade': 'Anestesiologia', 'telefone': '(11) 99999-0005', 'email': 'fernando.lima@maternidade.com', 'ativo': True},
 ]
+
+ESPECIALIDADES = ['Obstetrícia', 'Neonatologia', 'Anestesiologia', 'Pediatria', 'Ginecologia']
 
 LEITOS = [
     {'id': f'PP-{i:02d}', 'setor': 'Pré-parto', 'tipo': 'Enfermaria'} for i in range(1, 11)
@@ -300,3 +302,78 @@ def adicionar_evolucao(nova_evolucao: dict):
     dados = get_dados()
     nova_evolucao['id'] = len(dados['evolucoes']) + 1
     dados['evolucoes'] = pd.concat([dados['evolucoes'], pd.DataFrame([nova_evolucao])], ignore_index=True)
+
+
+# ============================================================================
+# FUNÇÕES CRUD DE MÉDICOS
+# ============================================================================
+
+def get_medicos():
+    """Retorna lista de médicos."""
+    dados = get_dados()
+    return dados['medicos']
+
+
+def adicionar_medico(nome: str, crm: str, especialidade: str, telefone: str = "", email: str = ""):
+    """Adiciona um novo médico ao sistema."""
+    global _dados_cache
+    dados = get_dados()
+
+    # Gerar novo ID
+    novo_id = int(dados['medicos']['id'].max() + 1) if len(dados['medicos']) > 0 else 1
+
+    novo_medico = {
+        'id': novo_id,
+        'nome': nome,
+        'crm': crm,
+        'especialidade': especialidade,
+        'telefone': telefone,
+        'email': email,
+        'ativo': True
+    }
+
+    dados['medicos'] = pd.concat([dados['medicos'], pd.DataFrame([novo_medico])], ignore_index=True)
+    return novo_id
+
+
+def atualizar_medico(id_medico: int, dados_atualizados: dict):
+    """Atualiza dados de um médico."""
+    global _dados_cache
+    dados = get_dados()
+    idx = dados['medicos'][dados['medicos']['id'] == id_medico].index
+    if len(idx) > 0:
+        for key, value in dados_atualizados.items():
+            dados['medicos'].loc[idx[0], key] = value
+        return True
+    return False
+
+
+def remover_medico(id_medico: int):
+    """Remove (desativa) um médico do sistema."""
+    global _dados_cache
+    dados = get_dados()
+    idx = dados['medicos'][dados['medicos']['id'] == id_medico].index
+    if len(idx) > 0:
+        dados['medicos'].loc[idx[0], 'ativo'] = False
+        return True
+    return False
+
+
+def reativar_medico(id_medico: int):
+    """Reativa um médico no sistema."""
+    global _dados_cache
+    dados = get_dados()
+    idx = dados['medicos'][dados['medicos']['id'] == id_medico].index
+    if len(idx) > 0:
+        dados['medicos'].loc[idx[0], 'ativo'] = True
+        return True
+    return False
+
+
+def get_medico_por_id(id_medico: int):
+    """Retorna dados de um médico específico."""
+    dados = get_dados()
+    medico = dados['medicos'][dados['medicos']['id'] == id_medico]
+    if len(medico) > 0:
+        return medico.iloc[0].to_dict()
+    return None
